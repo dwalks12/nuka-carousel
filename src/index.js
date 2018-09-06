@@ -723,6 +723,9 @@ export default class Carousel extends React.Component {
 
   onResize() {
     this.setDimensions(null, this.props.onResize);
+    setTimeout(() => {
+      this.setDimensions(null, this.props.onResize);
+    }, 100);
   }
 
   onReadyStateChange() {

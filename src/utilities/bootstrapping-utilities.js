@@ -41,7 +41,7 @@ const findMaxHeightSlide = slides => {
   let maxHeight = 0;
   for (let i = 0; i < slides.length; i++) {
     if (slides[i].offsetHeight > maxHeight) {
-      maxHeight = slides[i].offsetHeight;
+      maxHeight = slides[i].childNodes[0].offsetHeight;
     }
   }
   return maxHeight;
