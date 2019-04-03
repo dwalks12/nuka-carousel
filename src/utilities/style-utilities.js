@@ -145,6 +145,7 @@ export const getTransitionProps = (props, state) => {
     wrapAround: props.wrapAround,
     zoomScale: props.zoomScale,
     opacityScale: props.opacityScale,
-    slideListMargin: props.slideListMargin
+    slideListMargin: props.slideListMargin,
+    enableWrapAroundHack: props.enableWrapAroundHack
   };
 };

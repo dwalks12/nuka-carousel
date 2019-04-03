@@ -1042,7 +1042,8 @@ Carousel.propTypes = {
   withoutControls: PropTypes.bool,
   wrapAround: PropTypes.bool,
   opacityScale: PropTypes.number,
-  slideListMargin: PropTypes.number
+  slideListMargin: PropTypes.number,
+  enableWrapAroundHack: PropTypes.bool
 };
 
 Carousel.defaultProps = {
@@ -1081,7 +1082,8 @@ Carousel.defaultProps = {
   width: '100%',
   withoutControls: false,
   wrapAround: false,
-  slideListMargin: 10
+  slideListMargin: 10,
+  enableWrapAroundHack: false
 };
 
 export { NextButton, PreviousButton, PagingDots };

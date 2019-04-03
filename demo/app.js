@@ -8,17 +8,19 @@ class App extends React.Component {
   constructor() {
     super(...arguments);
     this.state = {
+      cellSpacing: 60,
       slideIndex: 0,
       length: 6,
-      wrapAround: false,
+      wrapAround: true,
       animation: undefined,
       underlineHeader: false,
       zoomScale: 0.5,
-      slidesToShow: 1,
-      cellAlign: 'left',
+      slidesToShow: 1.5,
+      cellAlign: 'center',
       transitionMode: 'scroll',
       heightMode: 'max',
-      withoutControls: false
+      withoutControls: false,
+      enableWrapAroundHack: true
     };
 
     this.handleImageClick = this.handleImageClick.bind(this);
@@ -49,6 +51,8 @@ class App extends React.Component {
           wrapAround={this.state.wrapAround}
           slideIndex={this.state.slideIndex}
           heightMode={this.state.heightMode}
+          cellSpacing={this.state.cellSpacing}
+          enableWrapAroundHack={this.state.enableWrapAroundHack}
           renderTopCenterControls={({ currentSlide }) => (
             <div
               style={{

@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 const MIN_ZOOM_SCALE = 0;
 const MAX_ZOOM_SCALE = 1;
 
+const memoize = {};
+
 export default class ScrollTransition extends React.Component {
   constructor(props) {
     super(props);
@@ -103,8 +105,62 @@ export default class ScrollTransition extends React.Component {
     });
   }
 
+  needsLastToFirstFix(index, targetPosition) {
+    const lasSlideIndex = this.props.slideCount - 1;
+    const realSlideWidth = this.props.slideWidth + this.props.cellSpacing;
+    const slideNeedsHack =
+      index === 0 || index === 1 || index === lasSlideIndex;
+    const deltaXNeedsHack = this.props.deltaX <= -realSlideWidth;
+    const targetPositionNeedsHack =
+      targetPosition === 0 ||
+      targetPosition === realSlideWidth ||
+      targetPosition === -realSlideWidth;
+    const result =
+      slideNeedsHack &&
+      targetPositionNeedsHack &&
+      deltaXNeedsHack &&
+      typeof memoize[index] !== 'undefined';
+    return result;
+  }
+
+  needsFirstToLastFix(index, targetPosition) {
+    const lasSlideIndex = this.props.slideCount - 1;
+    const realSlideWidth = this.props.slideWidth + this.props.cellSpacing;
+    const slideNeedsHack =
+      index === 0 || index === lasSlideIndex || index === lasSlideIndex - 1;
+    const deltaXNeedsHack =
+      this.props.deltaX > realSlideWidth &&
+      realSlideWidth * 2 > this.props.deltaX;
+    const targetPositionNeedsHack =
+      targetPosition / index === realSlideWidth ||
+      (index === 0 &&
+        targetPosition / this.props.slideCount === realSlideWidth);
+    const result =
+      slideNeedsHack &&
+      targetPositionNeedsHack &&
+      deltaXNeedsHack &&
+      typeof memoize[index] !== 'undefined';
+    return result;
+  }
+
+  /* eslint-disable complexity */
   getSlideStyles(index, positionValue) {
-    const targetPosition = this.getSlideTargetPosition(index, positionValue);
+    let targetPosition = this.getSlideTargetPosition(index, positionValue);
+    const mayNeedLastToFirstFix = this.props.currentSlide === 0;
+    const mayNeedFirstToLastFix =
+      this.props.currentSlide === this.props.slideCount - 1;
+    const needsLastToFirstFix =
+      mayNeedLastToFirstFix && this.needsLastToFirstFix(index, targetPosition);
+    const needsFirstToLastFix =
+      mayNeedFirstToLastFix && this.needsFirstToLastFix(index, targetPosition);
+    if (
+      this.props.enableWrapAroundHack &&
+      (needsLastToFirstFix || needsFirstToLastFix)
+    ) {
+      targetPosition = memoize[index];
+    } else {
+      memoize[index] = targetPosition;
+    }
     const transformScale =
       this.props.animation === 'zoom' && this.props.currentSlide !== index
         ? Math.max(
